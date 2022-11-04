@@ -1,0 +1,50 @@
+version: "3"
+
+volumes:
+  rest-db:
+
+services:
+  rest-postgres:
+    container_name: rest-postgres-cont
+    image: postgres:alpine
+    environment:
+      - POSTGRES_PASSWORD=23nr23hcnijahseh324
+    volumes:
+      - rest-db:/var/lib/postgresql
+    ports:
+      - 1339:5432
+  rest-data-extractor:
+    image: rest-data-extractor:latest
+    build:
+      context: ./data-extractor
+      dockerfile: Dockerfile
+    container_name: rest-data-extractor-cont
+    environment:
+      - DB_CONNECTION_URL=postgresql://rest-postgres/postgres?user=postgres&password=23nr23hcnijahseh324
+      - WEATHER_API_HOST=api.openweathermap.org
+      - WEATHER_API_METHOD=data/2.5/weather
+      - WEATHER_API_KEY=028df35c00b958cdd08834144a509f7e
+      - REQUEST_INTERVAL=10
+  rest-data-processer:
+    image: rest-data-processer:latest
+    build:
+      context: ./data-processer
+      dockerfile: Dockerfile
+    container_name: rest-data-processer-cont
+    environment:
+      - DB_CONNECTION_URL=postgresql://rest-postgres/postgres?user=postgres&password=23nr23hcnijahseh324
+      - REPORT_INTERVAL=3600
+      - GRAPICS_WIDTH=920
+      - GRAPICS_HEIGHT=800
+  rest-image-uploader:
+    image: rest-image-uploader:latest
+    build:
+      context: ./image-uploader
+      dockerfile: Dockerfile
+    container_name: rest-image-uploader-cont
+    environment:
+      - DB_CONNECTION_URL=postgresql://rest-postgres/postgres?user=postgres&password=23nr23hcnijahseh324
+      - IMAGE_API_HOST=api.imgbb.com
+      - IMAGE_API_KEY=c02359eec7ca700b373c8a8715f96558
+      - IMAGE_API_METHOD=1/upload
+      - REQUEST_INTERVAL=15
