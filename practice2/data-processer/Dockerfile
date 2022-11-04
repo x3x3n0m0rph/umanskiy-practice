@@ -1,6 +1,7 @@
 FROM python:3.10-slim
 RUN mkdir app
-COPY app app
-WORKDIR /app
-RUN pip install --no-cache-dir -r requirements.txt
+WORKDIR app
+COPY ./app ./
+RUN pip install --no-cache-dir psycopg2 sqlalchemy requests
+RUN pip install --no-cache-dir matplotlib
 ENTRYPOINT ["python", "-u", "run.py"]
