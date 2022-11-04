@@ -1,0 +1,25 @@
+version: '3'
+volumes:
+  postgres-geo-data:
+  grafana-geo-data:
+services:
+  postgres-geo:
+    container_name: postgres-geo-cont
+    image: binakot/postgresql-postgis-timescaledb:latest
+    environment:
+      - POSTGRES_PASSWORD=ah123yd168a9d9y2891i2hdih21d12dh1k2dk12d
+    volumes:
+      - postgres-geo-data:/var/lib/postgresql
+    ports:
+      - 1337:5432
+  grafana-geo:
+    container_name: grafana-geo-cont
+    image: grafana/grafana-oss:latest
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=ah123yd168a9d9y2891i2hdih21d12dh1k2dk12d
+    volumes:
+      - grafana-geo-data:/var/lib/grafana
+    depends_on:
+      - postgres-geo
+    ports:
+      - 1338:3000

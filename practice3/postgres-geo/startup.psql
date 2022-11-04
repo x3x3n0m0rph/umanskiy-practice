@@ -1,0 +1,2 @@
+\i sql/nyc_data_contagg.sql
+\copy rides from data/nyc_data_rides.csv csv
