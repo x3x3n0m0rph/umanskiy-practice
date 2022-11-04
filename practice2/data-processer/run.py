@@ -3,26 +3,31 @@ import io
 import logging
 import random
 import matplotlib.pyplot as plt
-logging.basicConfig(level="INFO")
 
 from app.models import Base, Location, WeatherStatus, WeatherReport
 from app.utils import pass_or_die
+
+logging.basicConfig(level="INFO", format=pass_or_die("DEFAULT_LOG_FORMAT"))
 
 from http import HTTPStatus
 from datetime import datetime, timedelta
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import OperationalError
 
 # init connections
-try:
-    eng = create_engine(pass_or_die("DB_CONNECTION_URL"))
-    Base.metadata.bind = eng
-    Base.metadata.create_all()
-    sess = Session(eng)
-except Exception as ex:
-    logging.fatal(ex)
-    exit(1)
-
+while True:
+    try:
+        eng = create_engine(pass_or_die("DB_CONNECTION_URL"))
+        Base.metadata.bind = eng
+        sess = Session(eng)
+        break
+    except OperationalError as ex:
+        logging.warning(f"Unable to connect to DB: {ex}. Repeating...")
+        continue
+    except Exception as ex:
+        logging.fatal(ex)
+        exit(1)
 
 report_interval = int(pass_or_die("REPORT_INTERVAL"))
 DPI = 96
@@ -39,8 +44,8 @@ while True:
         fig.suptitle(f"Weather statistics in last {report_interval} sec")
 
         report = WeatherReport(
-            interval_start=datetime.now(),
-            interval_stop=datetime.now() - timedelta(seconds=report_interval)
+            interval_start=datetime.now() - timedelta(seconds=report_interval),
+            interval_stop=datetime.now() 
         )
 
         # generating the report

@@ -1,6 +1,6 @@
 FROM python:3.10-slim
+RUN pip install --no-cache-dir psycopg2-binary sqlalchemy requests
 RUN mkdir app
-WORKDIR app
-COPY ./app ./
-RUN pip install --no-cache-dir psycopg2 sqlalchemy requests
+COPY . /app
+WORKDIR /app
 ENTRYPOINT ["python", "-u", "run.py"]

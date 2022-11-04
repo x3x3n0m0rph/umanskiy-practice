@@ -5,7 +5,7 @@ from sqlalchemy import Column
 from sqlalchemy import ForeignKey
 
 from sqlalchemy.orm import registry, relationship
-from sqlalchemy.types import Integer, Float, String, DateTime
+from sqlalchemy.types import Integer, Float, String, DateTime,LargeBinary
 
 mapping_registry = registry() 
 Base = mapping_registry.generate_base()
@@ -28,3 +28,15 @@ class WeatherStatus(Base):
     temperature = Column(Float)
     humidity = Column(Float)
     pressure = Column(Float)
+
+class WeatherReport(Base):
+    __tablename__ = "weather_report"
+    id = Column(Integer, primary_key=True)
+    created_at = Column(DateTime, nullable=False, default=datetime.now)
+    interval_start = Column(DateTime, nullable=False)
+    interval_stop = Column(DateTime, nullable=False)
+    image_blob = Column(LargeBinary, nullable=False)
+
+    uploaded_at = Column(DateTime)
+    upload_status = Column(Integer)
+    upload_url = Column(String)

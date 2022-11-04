@@ -10,7 +10,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=23nr23hcnijahseh324
     volumes:
-      - rest-db:/var/lib/postgresql
+      - rest-db:/var/lib/postgresql/data
     ports:
       - 1339:5432
   rest-data-extractor:
@@ -24,7 +24,10 @@ services:
       - WEATHER_API_HOST=api.openweathermap.org
       - WEATHER_API_METHOD=data/2.5/weather
       - WEATHER_API_KEY=028df35c00b958cdd08834144a509f7e
-      - REQUEST_INTERVAL=10
+      - REQUEST_INTERVAL=15
+      - DEFAULT_LOG_FORMAT=%(asctime)s [%(name)s:%(lineno)d] [%(levelname)s] %(message)s
+    depends_on:
+      - rest-postgres
   rest-data-processer:
     image: rest-data-processer:latest
     build:
@@ -36,6 +39,9 @@ services:
       - REPORT_INTERVAL=3600
       - GRAPICS_WIDTH=920
       - GRAPICS_HEIGHT=800
+      - DEFAULT_LOG_FORMAT=%(asctime)s [%(name)s:%(lineno)d] [%(levelname)s] %(message)s
+    depends_on:
+      - rest-postgres
   rest-image-uploader:
     image: rest-image-uploader:latest
     build:
@@ -47,4 +53,7 @@ services:
       - IMAGE_API_HOST=api.imgbb.com
       - IMAGE_API_KEY=c02359eec7ca700b373c8a8715f96558
       - IMAGE_API_METHOD=1/upload
-      - REQUEST_INTERVAL=15
+      - REQUEST_INTERVAL=30
+      - DEFAULT_LOG_FORMAT=%(asctime)s [%(name)s:%(lineno)d] [%(levelname)s] %(message)s
+    depends_on: 
+      - rest-postgres
