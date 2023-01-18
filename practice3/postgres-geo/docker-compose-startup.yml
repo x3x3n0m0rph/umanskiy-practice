@@ -9,7 +9,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=ah123yd168a9d9y2891i2hdih21d12dh1k2dk12d
     volumes:
-      - postgres-geo-data:/var/lib/postgresql
+      - postgres-geo-data:/var/lib/postgresql/data
     ports:
       - 1337:5432
   postgres-geo-setup:

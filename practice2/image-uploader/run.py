@@ -39,7 +39,7 @@ while True:
     try:
         report = sess.query(WeatherReport).filter(
             WeatherReport.upload_status == None
-        ).one_or_none()
+        ).first()
         if report is None:
             continue
 

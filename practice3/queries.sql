@@ -37,3 +37,25 @@ where rides.pickup_longitude != 0
 	  and rides.dropoff_longitude != 0
 	  and rides.dropoff_latitude != 0
 group by vendor_id
+
+# средняя скорость поездки 
+select 
+	t.*,
+	(t.linear_dist_m / extract(epoch from elapsed_time)) as speed_mps
+from ( select ctid, 
+	(dropoff_datetime - pickup_datetime) as elapsed_time,
+	st_point(pickup_longitude, pickup_latitude)::geography as pickup,
+	st_point(dropoff_longitude, dropoff_latitude)::geography as dropoff,
+	st_distance(
+		st_point(pickup_longitude, pickup_latitude)::geography,
+		st_point(dropoff_longitude, dropoff_latitude)::geography 
+	) as linear_dist_m
+	from rides
+) as t
+where 
+		elapsed_time > INTERVAL '1 seconds'
+	and elapsed_time < INTERVAL '1 days'
+	and linear_dist_m > 0.0
+	and linear_dist_m < 100000.0
+order by speed_mps desc
+limit 100;

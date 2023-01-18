@@ -1,0 +1,16 @@
+version: "3"
+
+volumes:
+    rabbitmq-data:
+
+services:
+    rabbitmq:
+        image: rabbitmq:alpine
+        container_name: "rabbitmq-test"
+        volumes:
+            - rabbitmq-data:/var/lib/rabbitmq
+        ports:
+            - "5672:5672"
+        environment:
+            RABBITMQ_DEFAULT_USER: "rabbitmq"
+            RABBITMQ_DEFAULT_PASS: "6ad6wd7w7dw76dw6d7w8976d8wdw75d7w5d0"

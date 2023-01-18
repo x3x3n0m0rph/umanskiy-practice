@@ -57,3 +57,17 @@ services:
       - DEFAULT_LOG_FORMAT=%(asctime)s [%(name)s:%(lineno)d] [%(levelname)s] %(message)s
     depends_on: 
       - rest-postgres
+  rest-ocr-service:
+    image: rest-ocr-service:latest
+    build:
+      context: ./ocr-service
+      dockerfile: Dockerfile
+    container_name: rest-ocr-service-cont
+    environment:
+      - DB_CONNECTION_URL=postgresql://rest-postgres/postgres?user=postgres&password=23nr23hcnijahseh324
+      - FETCH_INTERVAL=30
+      - DEFAULT_LOG_FORMAT=%(asctime)s [%(name)s:%(lineno)d] [%(levelname)s] %(message)s
+    ports:
+      - 1340:5000
+    depends_on: 
+      - rest-postgres
